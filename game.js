@@ -81,7 +81,6 @@ const gunGroup = new THREE.Group();
 
 const metalBlack = new THREE.MeshStandardMaterial({ color: 0x151515, metalness: 0.85, roughness: 0.35 });
 const metalGray  = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.9,  roughness: 0.4 });
-const metalLight = new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.95, roughness: 0.25 });
 const woodBrown  = new THREE.MeshStandardMaterial({ color: 0x7a3f17, roughness: 0.85 });
 const woodDark   = new THREE.MeshStandardMaterial({ color: 0x4a2610, roughness: 0.9 });
 
@@ -388,7 +387,6 @@ function tryShoot() {
     updateAmmoUI();
     crosshairTargetSpread += 6;
 
-    // Вспышка
     muzzleFlash.visible = true;
     muzzleFlash.scale.setScalar(1 + Math.random() * 0.5);
     muzzleLight.intensity = 4;
@@ -397,18 +395,15 @@ function tryShoot() {
         muzzleLight.intensity = 0;
     }, 45);
 
-    // Отдача
     weapon.recoilAmount += WEAPON.recoil * (weapon.isZooming ? 0.6 : 1);
     gunGroup.position.z = gunBasePos.z + 0.06;
     setTimeout(() => {
         gunGroup.position.z = gunBasePos.z;
     }, 50);
 
-    // Гильза + дым
     spawnShell();
     if (Math.random() < 0.35) spawnSmoke();
 
-    // Разброс
     const currentSpread = WEAPON.spread * (weapon.isZooming ? 0.4 : 1);
     const spreadX = (Math.random() - 0.5) * currentSpread;
     const spreadY = (Math.random() - 0.5) * currentSpread;
