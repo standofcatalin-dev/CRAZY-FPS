@@ -25,7 +25,7 @@ renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
 // ===== СВЕТ =====
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+scene.add(new THREE.AmbientLight(0xffffff, 0.7));
 
 const sun = new THREE.DirectionalLight(0xffffff, 0.9);
 sun.position.set(20, 40, 20);
@@ -80,74 +80,140 @@ for (let i = 0; i < 12; i++) {
 const gunGroup = new THREE.Group();
 
 // Материалы
-const metalMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.9, roughness: 0.4 });
-const woodMat  = new THREE.MeshStandardMaterial({ color: 0x6b3410, roughness: 0.9 });
+const metalBlack = new THREE.MeshStandardMaterial({ color: 0x151515, metalness: 0.85, roughness: 0.35 });
+const metalGray  = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.9,  roughness: 0.4 });
+const metalLight = new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.95, roughness: 0.25 });
+const woodBrown  = new THREE.MeshStandardMaterial({ color: 0x7a3f17, roughness: 0.85 });
+const woodDark   = new THREE.MeshStandardMaterial({ color: 0x4a2610, roughness: 0.9 });
 
-// Ствольная коробка (основное тело)
-const body = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.15, 0.7), metalMat);
-body.position.set(0, 0, -0.2);
-gunGroup.add(body);
+// --- СТВОЛЬНАЯ КОРОБКА ---
+const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.14, 0.42), metalBlack);
+receiver.position.set(0, 0, -0.05);
+gunGroup.add(receiver);
 
-// Ствол
-const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 12), metalMat);
+const topCover = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, 0.42), metalGray);
+topCover.position.set(0, 0.085, -0.05);
+gunGroup.add(topCover);
+
+// --- СТВОЛ ---
+const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.75, 16), metalGray);
 barrel.rotation.x = Math.PI / 2;
-barrel.position.set(0, 0.03, -0.85);
+barrel.position.set(0, 0.02, -0.63);
 gunGroup.add(barrel);
 
-// Деревянное цевьё
-const handguard = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.35), woodMat);
-handguard.position.set(0, 0.0, -0.55);
+// --- ГАЗОВАЯ ТРУБКА ---
+const gasTube = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.4, 12), metalGray);
+gasTube.rotation.x = Math.PI / 2;
+gasTube.position.set(0, 0.075, -0.5);
+gunGroup.add(gasTube);
+
+// --- ГАЗОВАЯ КАМЕРА ---
+const gasBlock = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.1, 0.09), metalBlack);
+gasBlock.position.set(0, 0.04, -0.72);
+gunGroup.add(gasBlock);
+
+// --- ДУЛЬНЫЙ ТОРМОЗ ---
+const muzzleBrake = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.09, 12), metalBlack);
+muzzleBrake.rotation.x = Math.PI / 2;
+muzzleBrake.position.set(0, 0.02, -1.03);
+gunGroup.add(muzzleBrake);
+
+// --- ДЕРЕВЯННОЕ ЦЕВЬЁ ---
+const handguard = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.11, 0.32), woodBrown);
+handguard.position.set(0, -0.015, -0.4);
 gunGroup.add(handguard);
 
-// Магазин (изогнутый — упрощённо наклонённый)
-const mag = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.35, 0.14), metalMat);
-mag.position.set(0, -0.22, -0.15);
-mag.rotation.x = -0.35;
-gunGroup.add(mag);
+const upperHandguard = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.055, 0.28), woodBrown);
+upperHandguard.position.set(0, 0.12, -0.42);
+gunGroup.add(upperHandguard);
 
-// Рукоятка
-const grip = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.22, 0.1), woodMat);
-grip.position.set(0, -0.2, 0.1);
-grip.rotation.x = 0.25;
+// --- МАГАЗИН ---
+const magGroup = new THREE.Group();
+const magTop = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.16, 0.13), metalBlack);
+magTop.position.y = -0.06;
+magGroup.add(magTop);
+
+const magBottom = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.22, 0.12), metalBlack);
+magBottom.position.set(0, -0.22, 0.055);
+magBottom.rotation.x = -0.35;
+magGroup.add(magBottom);
+
+magGroup.position.set(0, -0.13, -0.08);
+gunGroup.add(magGroup);
+
+// --- РУКОЯТКА ---
+const grip = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.22, 0.09), woodDark);
+grip.position.set(0, -0.19, 0.12);
+grip.rotation.x = 0.28;
 gunGroup.add(grip);
 
-// Приклад
-const stock = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.13, 0.3), woodMat);
-stock.position.set(0, -0.02, 0.3);
-stock.rotation.x = -0.05;
+// Спусковая скоба
+const triggerGuard = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.008, 6, 12, Math.PI), metalGray);
+triggerGuard.rotation.z = Math.PI;
+triggerGuard.rotation.x = Math.PI / 2;
+triggerGuard.position.set(0, -0.1, 0.12);
+gunGroup.add(triggerGuard);
+
+// Курок
+const hammer = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.07, 0.02), metalGray);
+hammer.position.set(0, -0.09, 0.22);
+hammer.rotation.x = 0.3;
+gunGroup.add(hammer);
+
+// --- ПРИКЛАД ---
+const stock = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.11, 0.3), woodBrown);
+stock.position.set(0, -0.03, 0.36);
+stock.rotation.x = -0.06;
 gunGroup.add(stock);
 
-// Мушка (прицельная планка спереди)
-const sightFront = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.08, 0.02), metalMat);
-sightFront.position.set(0, 0.12, -1.25);
-gunGroup.add(sightFront);
+const buttPlate = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.13, 0.03), metalBlack);
+buttPlate.position.set(0, -0.03, 0.52);
+buttPlate.rotation.x = -0.06;
+gunGroup.add(buttPlate);
 
-// Целик (задний)
-const sightBack = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.03), metalMat);
-sightBack.position.set(0, 0.12, -0.4);
-gunGroup.add(sightBack);
+// --- МУШКА ---
+const frontSightBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.04), metalBlack);
+frontSightBase.position.set(0, 0.1, -0.85);
+gunGroup.add(frontSightBase);
 
-// Вспышка выстрела (спрятана, появляется при стрельбе)
+const frontSightPin = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.06, 0.008), metalGray);
+frontSightPin.position.set(0, 0.15, -0.85);
+gunGroup.add(frontSightPin);
+
+// --- ЦЕЛИК ---
+const rearSight = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.025, 0.05), metalBlack);
+rearSight.position.set(0, 0.11, -0.18);
+gunGroup.add(rearSight);
+
+const rearSightNotch = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.03, 0.012), metalGray);
+rearSightNotch.position.set(0, 0.13, -0.18);
+gunGroup.add(rearSightNotch);
+
+// --- РУКОЯТКА ЗАТВОРА ---
+const chargingHandle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.015, 0.02), metalGray);
+chargingHandle.position.set(0.07, 0.06, -0.1);
+gunGroup.add(chargingHandle);
+
+// --- ВСПЫШКА ---
 const muzzleFlash = new THREE.Mesh(
-    new THREE.SphereGeometry(0.12, 8, 8),
-    new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.9 })
+    new THREE.SphereGeometry(0.1, 8, 8),
+    new THREE.MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0.95 })
 );
-muzzleFlash.position.set(0, 0.03, -1.3);
+muzzleFlash.position.set(0, 0.02, -1.1);
 muzzleFlash.visible = false;
 gunGroup.add(muzzleFlash);
 
-// Свет от вспышки
-const muzzleLight = new THREE.PointLight(0xffaa00, 0, 5);
-muzzleLight.position.set(0, 0.03, -1.3);
+const muzzleLight = new THREE.PointLight(0xffaa00, 0, 6);
+muzzleLight.position.set(0, 0.02, -1.1);
 gunGroup.add(muzzleLight);
 
-// Позиционируем всё оружие в правом нижнем углу от камеры
-gunGroup.position.set(0.35, -0.3, -0.6);
-gunGroup.rotation.y = 0.05;
+// --- ПОЗИЦИЯ В РУКАХ ---
+gunGroup.position.set(0.28, -0.24, -0.55);
+gunGroup.rotation.set(0, 0.12, 0.02);
+
 camera.add(gunGroup);
 scene.add(camera);
 
-// Базовые значения для анимаций
 const gunBasePos = gunGroup.position.clone();
 const gunBaseRot = gunGroup.rotation.clone();
 
@@ -221,7 +287,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 function startZoom() {
     if (weapon.reloading) return;
     weapon.isZooming = true;
-    gunGroup.position.set(0, -0.18, -0.5);
+    gunGroup.position.set(0, -0.16, -0.45);
     gunGroup.rotation.set(0, 0, 0);
 }
 
@@ -235,7 +301,6 @@ function startReload() {
     if (weapon.reloading || weapon.ammo === WEAPON.magSize) return;
     weapon.reloading = true;
 
-    // Анимация: опустить ствол
     const startY = gunGroup.position.y;
     const startRotX = gunGroup.rotation.x;
     const t0 = performance.now();
@@ -279,7 +344,6 @@ function tryShoot() {
     weapon.ammo--;
     updateAmmoUI();
 
-    // Вспышка
     muzzleFlash.visible = true;
     muzzleLight.intensity = 3;
     setTimeout(() => {
@@ -287,14 +351,12 @@ function tryShoot() {
         muzzleLight.intensity = 0;
     }, 40);
 
-    // Отдача — ствол назад + вверх
     weapon.recoilAmount += WEAPON.recoil;
     gunGroup.position.z = gunBasePos.z + 0.08;
     setTimeout(() => {
         gunGroup.position.z = gunBasePos.z;
     }, 40);
 
-    // Попадание через Raycaster с разбросом
     const spreadX = (Math.random() - 0.5) * WEAPON.spread;
     const spreadY = (Math.random() - 0.5) * WEAPON.spread;
     raycaster.setFromCamera({ x: spreadX, y: spreadY }, camera);
@@ -309,7 +371,6 @@ function tryShoot() {
             score++;
             document.getElementById('score').textContent = 'Очки: ' + score;
         } else {
-            // Мигание при попадании
             enemy.material.color.setHex(0xffffff);
             setTimeout(() => enemy.material.color.setHex(0xe74c3c), 50);
         }
@@ -350,7 +411,7 @@ function spawnEnemy() {
 let spawnTimer = 0;
 const SPAWN_DELAY = 90;
 
-// ===== ДВИЖЕНИЕ =====
+// ===== ГРАНИЦЫ =====
 function clampPosition(pos) {
     pos.x = Math.max(-48, Math.min(48, pos.x));
     pos.z = Math.max(-48, Math.min(48, pos.z));
@@ -361,10 +422,8 @@ let animationId;
 let bobTime = 0;
 
 function update() {
-    // Автоматическая стрельба при зажатой ЛКМ
     if (weapon.shooting) tryShoot();
 
-    // Движение
     const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
     const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
 
@@ -381,7 +440,6 @@ function update() {
         clampPosition(player.position);
     }
 
-    // Bobbing — покачивание оружия при ходьбе
     if (isMoving) {
         bobTime += 0.15;
     } else {
@@ -394,23 +452,19 @@ function update() {
         gunGroup.position.x = gunBasePos.x + bobX;
     }
 
-    // Отдача — камера вверх
     player.pitch += weapon.recoilAmount;
     weapon.recoilAmount *= WEAPON.recoilRecovery;
 
-    // Камера
     camera.position.copy(player.position);
     camera.rotation.y = player.yaw;
     camera.rotation.x = player.pitch;
 
-    // Спавн
     spawnTimer--;
     if (spawnTimer <= 0) {
         spawnEnemy();
         spawnTimer = Math.max(30, SPAWN_DELAY - Math.floor(score));
     }
 
-    // Враги
     for (let i = enemies.length - 1; i >= 0; i--) {
         const e = enemies[i];
         const dirToPlayer = new THREE.Vector3().subVectors(player.position, e.position);
@@ -462,5 +516,4 @@ document.getElementById('restart-btn').addEventListener('click', () => {
     location.reload();
 });
 
-// Стартовый UI
 updateAmmoUI();
