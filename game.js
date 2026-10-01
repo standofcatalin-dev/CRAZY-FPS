@@ -1,3 +1,4 @@
+// ===== СЦЕНА =====
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
 scene.fog = new THREE.Fog(0x87ceeb, 20, 80);
@@ -9,6 +10,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
+// ===== СВЕТ =====
 const ambient = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambient);
 
@@ -23,6 +25,7 @@ sun.shadow.camera.top = 60;
 sun.shadow.camera.bottom = -60;
 scene.add(sun);
 
+// ===== ПОЛ =====
 const floorGeo = new THREE.PlaneGeometry(200, 200);
 const floorMat = new THREE.MeshStandardMaterial({ color: 0x556655 });
 const floor = new THREE.Mesh(floorGeo, floorMat);
@@ -34,6 +37,7 @@ const grid = new THREE.GridHelper(200, 100, 0x333333, 0x444444);
 grid.position.y = 0.01;
 scene.add(grid);
 
+// ===== СТЕНЫ =====
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
 function makeWall(x, z, w, d) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 8, d), wallMat);
@@ -47,6 +51,7 @@ makeWall(0, 50, 100, 2);
 makeWall(-50, 0, 2, 100);
 makeWall(50, 0, 2, 100);
 
+// ===== ЯЩИКИ-УКРЫТИЯ =====
 const crateMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b });
 for (let i = 0; i < 12; i++) {
     const size = 2 + Math.random() * 3;
@@ -61,6 +66,7 @@ for (let i = 0; i < 12; i++) {
     scene.add(crate);
 }
 
+// ===== ИГРОК =====
 const player = {
     position: new THREE.Vector3(0, 1.7, 0),
     yaw: 0,
@@ -69,18 +75,17 @@ const player = {
     health: 100
 };
 
+// ===== POINTER LOCK =====
 const canvas = renderer.domElement;
 let isLocked = false;
-
-document.getElementById('start-btn').addEventListener('click', () => {
-    canvas.requestPointerLock();
-});
-
-document.getElementById('restart-btn').addEventListener('click', () => location.reload());
 
 document.addEventListener('pointerlockchange', () => {
     isLocked = document.pointerLockElement === canvas;
     document.getElementById('start-screen').style.display = isLocked ? 'none' : 'flex';
+    if (isLocked && !running) {
+        running = true;
+        animate();
+    }
 });
 
 document.addEventListener('mousemove', (e) => {
@@ -90,10 +95,12 @@ document.addEventListener('mousemove', (e) => {
     player.pitch = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, player.pitch));
 });
 
+// ===== КЛАВИАТУРА =====
 const keys = {};
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
+// ===== СТРЕЛЬБА =====
 const raycaster = new THREE.Raycaster();
 const enemies = [];
 let score = 0;
@@ -118,6 +125,7 @@ function shoot() {
     }
 }
 
+// ===== ВРАГИ =====
 const enemyGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
 const enemyMat = new THREE.MeshStandardMaterial({ color: 0xe74c3c });
 
@@ -137,19 +145,22 @@ function spawnEnemy() {
 let spawnTimer = 0;
 const SPAWN_DELAY = 90;
 
+// ===== ГРАНИЦЫ =====
 function clampPosition(pos) {
     pos.x = Math.max(-48, Math.min(48, pos.x));
     pos.z = Math.max(-48, Math.min(48, pos.z));
 }
 
+// ===== ИГРОВОЙ ЦИКЛ =====
 let running = false;
 let animationId;
 
 function update() {
+    // Движение
     const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
     const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
 
-    let move = new THREE.Vector3();
+    const move = new THREE.Vector3();
     if (keys['KeyW']) move.add(forward);
     if (keys['KeyS']) move.sub(forward);
     if (keys['KeyD']) move.add(right);
@@ -161,6 +172,7 @@ function update() {
         clampPosition(player.position);
     }
 
+    // Камера
     camera.position.copy(player.position);
     const dir = new THREE.Vector3(
         -Math.sin(player.yaw) * Math.cos(player.pitch),
@@ -169,12 +181,14 @@ function update() {
     );
     camera.lookAt(camera.position.clone().add(dir));
 
+    // Спавн врагов
     spawnTimer--;
     if (spawnTimer <= 0) {
         spawnEnemy();
         spawnTimer = Math.max(30, SPAWN_DELAY - Math.floor(score));
     }
 
+    // Враги идут к игроку
     for (let i = enemies.length - 1; i >= 0; i--) {
         const e = enemies[i];
         const dirToPlayer = new THREE.Vector3().subVectors(player.position, e.position);
@@ -210,15 +224,18 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+// ===== РЕСАЙЗ =====
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// ===== КНОПКИ =====
 document.getElementById('start-btn').addEventListener('click', () => {
-    if (!running) {
-        running = true;
-        animate();
-    }
+    canvas.requestPointerLock();
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+    location.reload();
 });
