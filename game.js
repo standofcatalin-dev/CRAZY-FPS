@@ -77,6 +77,8 @@ for (let i = 0; i < 12; i++) {
 }
 
 // ===== МОДЕЛЬ AK-47 =====
+// Все детали строятся вперёд по -Z (ствол в -Z, приклад в +Z).
+// Группа оружия НЕ разворачивается — камера смотрит в -Z, значит ствол уже "вперёд".
 const gunGroup = new THREE.Group();
 
 // Материалы
@@ -208,14 +210,17 @@ muzzleLight.position.set(0, 0.02, -1.1);
 gunGroup.add(muzzleLight);
 
 // --- ПОЗИЦИЯ В РУКАХ ---
-gunGroup.position.set(0.28, -0.24, -0.55);
-gunGroup.rotation.set(0, 0.12, 0.02);
+// Ствол смотрит в -Z (вперёд), приклад у камеры (+Z).
+gunGroup.position.set(0.30, -0.32, -0.75);
+gunGroup.rotation.set(0, 0.1, 0);
+gunGroup.scale.set(0.9, 0.9, 0.9);
 
 camera.add(gunGroup);
 scene.add(camera);
 
 const gunBasePos = gunGroup.position.clone();
 const gunBaseRot = gunGroup.rotation.clone();
+const gunBaseScale = gunGroup.scale.clone();
 
 // ===== ИГРОК =====
 const player = {
@@ -287,7 +292,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 function startZoom() {
     if (weapon.reloading) return;
     weapon.isZooming = true;
-    gunGroup.position.set(0, -0.16, -0.45);
+    gunGroup.position.set(0, -0.18, -0.55);
     gunGroup.rotation.set(0, 0, 0);
 }
 
@@ -446,8 +451,8 @@ function update() {
         bobTime += 0.03;
     }
     if (!weapon.isZooming) {
-        const bobY = Math.sin(bobTime) * (isMoving ? 0.015 : 0.004);
-        const bobX = Math.cos(bobTime * 0.5) * (isMoving ? 0.012 : 0.003);
+        const bobY = Math.sin(bobTime) * (isMoving ? 0.012 : 0.003);
+        const bobX = Math.cos(bobTime * 0.5) * (isMoving ? 0.010 : 0.003);
         gunGroup.position.y = gunBasePos.y + bobY;
         gunGroup.position.x = gunBasePos.x + bobX;
     }
