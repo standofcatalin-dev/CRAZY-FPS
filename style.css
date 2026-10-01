@@ -1,1 +1,26 @@
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    overflow: hidden;
+    background: #1a1a1a;
+    font-family: Arial, sans-serif;
+    touch-action: none;
+}
+#game {
+    display: block;
+    background: #2a2a2a;
+    cursor: crosshair;
+}
+#ui {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+    text-shadow: 2px 2px 4px #000;
+}
