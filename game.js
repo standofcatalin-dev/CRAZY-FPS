@@ -77,18 +77,15 @@ for (let i = 0; i < 12; i++) {
 }
 
 // ===== МОДЕЛЬ AK-47 =====
-// Все детали строятся вперёд по -Z (ствол в -Z, приклад в +Z).
-// Группа оружия НЕ разворачивается — камера смотрит в -Z, значит ствол уже "вперёд".
 const gunGroup = new THREE.Group();
 
-// Материалы
 const metalBlack = new THREE.MeshStandardMaterial({ color: 0x151515, metalness: 0.85, roughness: 0.35 });
 const metalGray  = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.9,  roughness: 0.4 });
 const metalLight = new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.95, roughness: 0.25 });
 const woodBrown  = new THREE.MeshStandardMaterial({ color: 0x7a3f17, roughness: 0.85 });
 const woodDark   = new THREE.MeshStandardMaterial({ color: 0x4a2610, roughness: 0.9 });
 
-// --- СТВОЛЬНАЯ КОРОБКА ---
+// Ствольная коробка
 const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.14, 0.42), metalBlack);
 receiver.position.set(0, 0, -0.05);
 gunGroup.add(receiver);
@@ -97,30 +94,28 @@ const topCover = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, 0.42), metalGr
 topCover.position.set(0, 0.085, -0.05);
 gunGroup.add(topCover);
 
-// --- СТВОЛ ---
+// Ствол
 const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.75, 16), metalGray);
 barrel.rotation.x = Math.PI / 2;
 barrel.position.set(0, 0.02, -0.63);
 gunGroup.add(barrel);
 
-// --- ГАЗОВАЯ ТРУБКА ---
+// Газовая трубка
 const gasTube = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.4, 12), metalGray);
 gasTube.rotation.x = Math.PI / 2;
 gasTube.position.set(0, 0.075, -0.5);
 gunGroup.add(gasTube);
 
-// --- ГАЗОВАЯ КАМЕРА ---
 const gasBlock = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.1, 0.09), metalBlack);
 gasBlock.position.set(0, 0.04, -0.72);
 gunGroup.add(gasBlock);
 
-// --- ДУЛЬНЫЙ ТОРМОЗ ---
 const muzzleBrake = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.09, 12), metalBlack);
 muzzleBrake.rotation.x = Math.PI / 2;
 muzzleBrake.position.set(0, 0.02, -1.03);
 gunGroup.add(muzzleBrake);
 
-// --- ДЕРЕВЯННОЕ ЦЕВЬЁ ---
+// Цевьё
 const handguard = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.11, 0.32), woodBrown);
 handguard.position.set(0, -0.015, -0.4);
 gunGroup.add(handguard);
@@ -129,7 +124,7 @@ const upperHandguard = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.055, 0.28),
 upperHandguard.position.set(0, 0.12, -0.42);
 gunGroup.add(upperHandguard);
 
-// --- МАГАЗИН ---
+// Магазин
 const magGroup = new THREE.Group();
 const magTop = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.16, 0.13), metalBlack);
 magTop.position.y = -0.06;
@@ -143,26 +138,24 @@ magGroup.add(magBottom);
 magGroup.position.set(0, -0.13, -0.08);
 gunGroup.add(magGroup);
 
-// --- РУКОЯТКА ---
+// Рукоятка
 const grip = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.22, 0.09), woodDark);
 grip.position.set(0, -0.19, 0.12);
 grip.rotation.x = 0.28;
 gunGroup.add(grip);
 
-// Спусковая скоба
 const triggerGuard = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.008, 6, 12, Math.PI), metalGray);
 triggerGuard.rotation.z = Math.PI;
 triggerGuard.rotation.x = Math.PI / 2;
 triggerGuard.position.set(0, -0.1, 0.12);
 gunGroup.add(triggerGuard);
 
-// Курок
 const hammer = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.07, 0.02), metalGray);
 hammer.position.set(0, -0.09, 0.22);
 hammer.rotation.x = 0.3;
 gunGroup.add(hammer);
 
-// --- ПРИКЛАД ---
+// Приклад
 const stock = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.11, 0.3), woodBrown);
 stock.position.set(0, -0.03, 0.36);
 stock.rotation.x = -0.06;
@@ -173,7 +166,7 @@ buttPlate.position.set(0, -0.03, 0.52);
 buttPlate.rotation.x = -0.06;
 gunGroup.add(buttPlate);
 
-// --- МУШКА ---
+// Мушка
 const frontSightBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.04), metalBlack);
 frontSightBase.position.set(0, 0.1, -0.85);
 gunGroup.add(frontSightBase);
@@ -182,7 +175,7 @@ const frontSightPin = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.06, 0.008), 
 frontSightPin.position.set(0, 0.15, -0.85);
 gunGroup.add(frontSightPin);
 
-// --- ЦЕЛИК ---
+// Целик
 const rearSight = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.025, 0.05), metalBlack);
 rearSight.position.set(0, 0.11, -0.18);
 gunGroup.add(rearSight);
@@ -191,12 +184,12 @@ const rearSightNotch = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.03, 0.012),
 rearSightNotch.position.set(0, 0.13, -0.18);
 gunGroup.add(rearSightNotch);
 
-// --- РУКОЯТКА ЗАТВОРА ---
+// Рукоятка затвора
 const chargingHandle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.015, 0.02), metalGray);
 chargingHandle.position.set(0.07, 0.06, -0.1);
 gunGroup.add(chargingHandle);
 
-// --- ВСПЫШКА ---
+// Вспышка
 const muzzleFlash = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 8, 8),
     new THREE.MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0.95 })
@@ -209,18 +202,59 @@ const muzzleLight = new THREE.PointLight(0xffaa00, 0, 6);
 muzzleLight.position.set(0, 0.02, -1.1);
 gunGroup.add(muzzleLight);
 
-// --- ПОЗИЦИЯ В РУКАХ ---
-// Ствол смотрит в -Z (вперёд), приклад у камеры (+Z).
-gunGroup.position.set(0.30, -0.32, -0.75);
-gunGroup.rotation.set(0, 0.1, 0);
-gunGroup.scale.set(0.9, 0.9, 0.9);
+// Позиция оружия в руках
+gunGroup.position.set(0.42, -0.38, -0.9);
+gunGroup.rotation.set(0.05, 0.16, -0.03);
+gunGroup.scale.set(0.75, 0.75, 0.75);
 
 camera.add(gunGroup);
 scene.add(camera);
 
 const gunBasePos = gunGroup.position.clone();
 const gunBaseRot = gunGroup.rotation.clone();
-const gunBaseScale = gunGroup.scale.clone();
+
+// ===== ПРИЦЕЛ =====
+const crosshairCanvas = document.getElementById('crosshair');
+const crosshairCtx = crosshairCanvas.getContext('2d');
+function resizeCrosshair() {
+    crosshairCanvas.width = window.innerWidth;
+    crosshairCanvas.height = window.innerHeight;
+}
+resizeCrosshair();
+window.addEventListener('resize', resizeCrosshair);
+
+let crosshairSpread = 8;
+let crosshairTargetSpread = 8;
+
+function drawCrosshair() {
+    crosshairSpread += (crosshairTargetSpread - crosshairSpread) * 0.15;
+    crosshairTargetSpread += (8 - crosshairTargetSpread) * 0.1;
+
+    const cx = crosshairCanvas.width / 2;
+    const cy = crosshairCanvas.height / 2;
+    const gap = crosshairSpread;
+    const len = 8;
+
+    crosshairCtx.clearRect(0, 0, crosshairCanvas.width, crosshairCanvas.height);
+    crosshairCtx.strokeStyle = '#00ff44';
+    crosshairCtx.lineWidth = 2;
+    crosshairCtx.shadowColor = '#000';
+    crosshairCtx.shadowBlur = 3;
+
+    crosshairCtx.beginPath();
+    crosshairCtx.moveTo(cx, cy - gap);
+    crosshairCtx.lineTo(cx, cy - gap - len);
+    crosshairCtx.moveTo(cx, cy + gap);
+    crosshairCtx.lineTo(cx, cy + gap + len);
+    crosshairCtx.moveTo(cx - gap, cy);
+    crosshairCtx.lineTo(cx - gap - len, cy);
+    crosshairCtx.moveTo(cx + gap, cy);
+    crosshairCtx.lineTo(cx + gap + len, cy);
+    crosshairCtx.stroke();
+
+    requestAnimationFrame(drawCrosshair);
+}
+drawCrosshair();
 
 // ===== ИГРОК =====
 const player = {
@@ -292,14 +326,18 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 function startZoom() {
     if (weapon.reloading) return;
     weapon.isZooming = true;
-    gunGroup.position.set(0, -0.18, -0.55);
+    gunGroup.position.set(0, -0.16, -0.55);
     gunGroup.rotation.set(0, 0, 0);
+    camera.fov = WEAPON.zoomFov;
+    camera.updateProjectionMatrix();
 }
 
 function stopZoom() {
     weapon.isZooming = false;
     gunGroup.position.copy(gunBasePos);
     gunGroup.rotation.copy(gunBaseRot);
+    camera.fov = WEAPON.normalFov;
+    camera.updateProjectionMatrix();
 }
 
 function startReload() {
@@ -348,36 +386,46 @@ function tryShoot() {
     weapon.lastShot = now;
     weapon.ammo--;
     updateAmmoUI();
+    crosshairTargetSpread += 6;
 
+    // Вспышка
     muzzleFlash.visible = true;
-    muzzleLight.intensity = 3;
+    muzzleFlash.scale.setScalar(1 + Math.random() * 0.5);
+    muzzleLight.intensity = 4;
     setTimeout(() => {
         muzzleFlash.visible = false;
         muzzleLight.intensity = 0;
-    }, 40);
+    }, 45);
 
-    weapon.recoilAmount += WEAPON.recoil;
-    gunGroup.position.z = gunBasePos.z + 0.08;
+    // Отдача
+    weapon.recoilAmount += WEAPON.recoil * (weapon.isZooming ? 0.6 : 1);
+    gunGroup.position.z = gunBasePos.z + 0.06;
     setTimeout(() => {
         gunGroup.position.z = gunBasePos.z;
-    }, 40);
+    }, 50);
 
-    const spreadX = (Math.random() - 0.5) * WEAPON.spread;
-    const spreadY = (Math.random() - 0.5) * WEAPON.spread;
+    // Гильза + дым
+    spawnShell();
+    if (Math.random() < 0.35) spawnSmoke();
+
+    // Разброс
+    const currentSpread = WEAPON.spread * (weapon.isZooming ? 0.4 : 1);
+    const spreadX = (Math.random() - 0.5) * currentSpread;
+    const spreadY = (Math.random() - 0.5) * currentSpread;
     raycaster.setFromCamera({ x: spreadX, y: spreadY }, camera);
 
     const hits = raycaster.intersectObjects(enemies, false);
     if (hits.length > 0) {
         const enemy = hits[0].object;
         enemy.userData.hp = (enemy.userData.hp || 100) - WEAPON.damage;
+        enemy.material.color.setHex(0xffffff);
+        setTimeout(() => enemy.material.color.setHex(0xe74c3c), 60);
+
         if (enemy.userData.hp <= 0) {
             scene.remove(enemy);
             enemies.splice(enemies.indexOf(enemy), 1);
             score++;
             document.getElementById('score').textContent = 'Очки: ' + score;
-        } else {
-            enemy.material.color.setHex(0xffffff);
-            setTimeout(() => enemy.material.color.setHex(0xe74c3c), 50);
         }
     }
 }
@@ -392,6 +440,79 @@ function updateAmmoUI() {
     }
     el.textContent = weapon.ammo + ' / ' + WEAPON.magSize;
     el.style.color = weapon.ammo === 0 ? '#f00' : '#fff';
+}
+
+// ===== ГИЛЬЗЫ И ДЫМ =====
+const shells = [];
+const shellGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.04, 6);
+const shellMat = new THREE.MeshStandardMaterial({ color: 0xc9a227, metalness: 0.9, roughness: 0.3 });
+
+function spawnShell() {
+    const shell = new THREE.Mesh(shellGeo, shellMat);
+    shell.position.set(0.1, 0.05, -0.1);
+    gunGroup.add(shell);
+
+    shells.push({
+        mesh: shell,
+        vx: (Math.random() * 0.5 + 0.2),
+        vy: (Math.random() * 0.4 + 0.3),
+        vz: (Math.random() * 0.3 - 0.15),
+        rotX: Math.random() * 0.3,
+        rotY: Math.random() * 0.3,
+        life: 60
+    });
+}
+
+function updateShells() {
+    for (let i = shells.length - 1; i >= 0; i--) {
+        const s = shells[i];
+        s.mesh.position.x += s.vx * 0.05;
+        s.mesh.position.y += s.vy * 0.05;
+        s.mesh.position.z += s.vz * 0.05;
+        s.vy -= 0.02;
+        s.mesh.rotation.x += s.rotX;
+        s.mesh.rotation.y += s.rotY;
+        s.life--;
+
+        if (s.life <= 0) {
+            gunGroup.remove(s.mesh);
+            shells.splice(i, 1);
+        }
+    }
+}
+
+const smokeParticles = [];
+const smokeGeo = new THREE.SphereGeometry(0.03, 6, 6);
+const smokeMat = new THREE.MeshBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.5 });
+
+function spawnSmoke() {
+    const smoke = new THREE.Mesh(smokeGeo, smokeMat.clone());
+    smoke.position.set(0, 0.02, -1.05);
+    gunGroup.add(smoke);
+
+    smokeParticles.push({
+        mesh: smoke,
+        vy: 0.008 + Math.random() * 0.005,
+        vz: -0.01,
+        life: 40,
+        maxLife: 40
+    });
+}
+
+function updateSmoke() {
+    for (let i = smokeParticles.length - 1; i >= 0; i--) {
+        const p = smokeParticles[i];
+        p.mesh.position.y += p.vy;
+        p.mesh.position.z += p.vz;
+        p.mesh.scale.multiplyScalar(1.04);
+        p.mesh.material.opacity = (p.life / p.maxLife) * 0.5;
+        p.life--;
+
+        if (p.life <= 0) {
+            gunGroup.remove(p.mesh);
+            smokeParticles.splice(i, 1);
+        }
+    }
 }
 
 // ===== ВРАГИ =====
@@ -463,6 +584,9 @@ function update() {
     camera.position.copy(player.position);
     camera.rotation.y = player.yaw;
     camera.rotation.x = player.pitch;
+
+    updateShells();
+    updateSmoke();
 
     spawnTimer--;
     if (spawnTimer <= 0) {
